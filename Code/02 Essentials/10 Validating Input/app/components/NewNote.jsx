@@ -1,7 +1,7 @@
 import {
   Form,
   useActionData,
-  useTransition as useNavigation,
+  useNavigation,
 } from '@remix-run/react';
 
 import styles from './NewNote.css';

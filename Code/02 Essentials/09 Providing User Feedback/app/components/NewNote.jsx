@@ -1,4 +1,4 @@
-import { Form, useTransition as useNavigation } from '@remix-run/react';
+import { Form, useNavigation } from '@remix-run/react';
 
 import styles from './NewNote.css';
 

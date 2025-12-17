@@ -2,7 +2,7 @@ import {
   Form,
   Link,
   useActionData,
-  useTransition as useNavigation,
+  useNavigation,
 } from '@remix-run/react';
 
 function ExpenseForm() {

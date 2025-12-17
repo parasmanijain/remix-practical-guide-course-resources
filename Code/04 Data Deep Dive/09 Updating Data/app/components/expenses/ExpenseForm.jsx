@@ -5,7 +5,7 @@ import {
   useLoaderData,
   useMatches,
   useParams,
-  useTransition as useNavigation,
+  useNavigation,
 } from '@remix-run/react';
 
 function ExpenseForm() {

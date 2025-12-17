@@ -2,7 +2,7 @@ import {
   Form,
   Link,
   useSearchParams,
-  useTransition as useNavigation,
+  useNavigation,
 } from '@remix-run/react';
 import { FaLock, FaUserPlus } from 'react-icons/fa';
 
