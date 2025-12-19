@@ -1,11 +1,15 @@
-import { json } from '@remix-run/node';
+import {
+  json,
+  type MetaFunction,
+  type LoaderFunctionArgs,
+} from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
-
 import { getStoredNotes } from '~/data/notes';
+import { Note } from '~/models';
 import styles from '~/styles/note-details.css?url';
 
 export default function NoteDetailsPage() {
-  const note = useLoaderData();
+  const note = useLoaderData<typeof loader>();
 
   return (
     <main id='note-details'>
@@ -20,8 +24,8 @@ export default function NoteDetailsPage() {
   );
 }
 
-export async function loader({ params }) {
-  const notes = await getStoredNotes();
+export async function loader({ params }: LoaderFunctionArgs) {
+  const notes = (await getStoredNotes()) as Note[];
   const noteId = params.noteId;
   const selectedNote = notes.find((note) => note.id === noteId);
 
@@ -39,11 +43,14 @@ export function links() {
   return [{ rel: 'stylesheet', href: styles }];
 }
 
-export function meta({ data }) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
+    return [{ title: 'Note not found' }];
+  }
   return [
     {
       title: data.title,
       description: 'Manage your notes with ease.',
     },
   ];
-}
+};

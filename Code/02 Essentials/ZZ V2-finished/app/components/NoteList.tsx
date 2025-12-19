@@ -1,16 +1,16 @@
 import { Link } from '@remix-run/react';
-
+import { Note, NotesFile } from '~/models';
 import styles from './NoteList.css?url';
 
-function NoteList({ notes }) {
+function NoteList({ notes }: NotesFile) {
   return (
-    <ul id="note-list">
+    <ul id='note-list'>
       {notes.map((note, index) => (
-        <li key={note.id} className="note">
+        <li key={note.id} className='note'>
           <Link to={note.id}>
             <article>
               <header>
-                <ul className="note-meta">
+                <ul className='note-meta'>
                   <li>#{index + 1}</li>
                   <li>
                     <time dateTime={note.id}>

@@ -1,17 +1,21 @@
-import { json, redirect } from '@remix-run/node';
+import {
+  type ActionFunctionArgs,
+  type ErrorResponse,
+  json,
+  redirect,
+} from '@remix-run/node';
 import {
   Link,
   useRouteError,
   useLoaderData,
   isRouteErrorResponse,
 } from '@remix-run/react';
-
 import NewNote, { links as newNoteLinks } from '~/components/NewNote';
 import NoteList, { links as noteListLinks } from '~/components/NoteList';
 import { getStoredNotes, storeNotes } from '~/data/notes';
 
 export default function NotesPage() {
-  const notes = useLoaderData();
+  const notes = useLoaderData<typeof loader>();
 
   return (
     <main>
@@ -35,20 +39,34 @@ export async function loader() {
   return notes;
 }
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const noteData = Object.fromEntries(formData);
 
-  if (noteData.title.trim().length < 5) {
-    return {
-      message: 'Invalid title - must be at least 5 characters long.',
-    };
+  const title = formData.get('title');
+  const content = formData.get('content');
+
+  if (typeof title !== 'string' || typeof content !== 'string') {
+    return json(
+      { message: 'Invalid form submission.' },
+      { status: 400 }
+    );
+  }
+
+  if (title.trim().length < 5) {
+    return json(
+      { message: 'Invalid title - must be at least 5 characters long.' },
+      { status: 422 }
+    );
   }
 
   const existingNotes = await getStoredNotes();
-  noteData.id = new Date().toISOString();
-  const updatedNotes = existingNotes.concat(noteData);
-  await storeNotes(updatedNotes);
+  const newNote = {
+    id: new Date().toISOString(),
+    title,
+    content,
+  };
+  await storeNotes(existingNotes.concat(newNote));
   // await new Promise((resolve, reject) => setTimeout(() => resolve(), 2000));
   return redirect('/notes');
 }
@@ -66,7 +84,7 @@ export function meta() {
   ];
 }
 
-function CatchBoundary({ error }) {
+function CatchBoundary({ error }: { error: ErrorResponse }) {
   const message = error.data?.message || 'Data not found.';
 
   return (
@@ -83,10 +101,13 @@ export function ErrorBoundary() {
   if (response) {
     return <CatchBoundary error={error} />;
   }
+
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
   return (
     <main className='error'>
       <h1>An error related to your notes occurred!</h1>
-      <p>{error.message}</p>
+      <p>{errorMessage}</p>
       <p>
         Back to <Link to='/'>safety</Link>!
       </p>

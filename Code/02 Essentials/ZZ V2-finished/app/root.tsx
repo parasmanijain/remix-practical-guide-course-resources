@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
   useRouteError,
   isRouteErrorResponse,
+  ErrorResponse,
 } from '@remix-run/react';
 
 import MainNavigation from '~/components/MainNavigation';
@@ -39,7 +40,7 @@ export default function App() {
   );
 }
 
-function CatchBoundary({ error }) {
+function CatchBoundary({ error }: { error: ErrorResponse }) {
   return (
     <html lang='en'>
       <head>
@@ -73,6 +74,8 @@ export function ErrorBoundary() {
     return <CatchBoundary error={error} />;
   }
 
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
   return (
     <html lang='en'>
       <head>
@@ -86,7 +89,7 @@ export function ErrorBoundary() {
         </header>
         <main className='error'>
           <h1>An error occurred!</h1>
-          <p>{error.message}</p>
+          <p>{errorMessage}</p>
           <p>
             Back to <Link to='/'>safety</Link>!
           </p>

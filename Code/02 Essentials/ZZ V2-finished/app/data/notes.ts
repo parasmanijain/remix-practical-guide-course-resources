@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import { Note } from '~/models';
 
 export async function getStoredNotes() {
   try {
@@ -13,6 +14,6 @@ export async function getStoredNotes() {
   }
 }
 
-export function storeNotes(notes) {
-  return fs.writeFile('notes.json', JSON.stringify({ notes: notes || [] }));
+export function storeNotes(notes: Note[]) {
+  return fs.writeFile('notes.json', JSON.stringify({ notes: notes }));
 }
