@@ -5,7 +5,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-
 import sharedStyles from '~/styles/shared.css?url';
 
 export const meta = () => [

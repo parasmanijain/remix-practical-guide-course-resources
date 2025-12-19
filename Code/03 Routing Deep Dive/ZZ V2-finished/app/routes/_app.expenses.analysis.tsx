@@ -1,6 +1,12 @@
 // /expenses/analysis
 
-const DUMMY_EXPENSES = [
+
+
+import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
+import Chart from '~/components/expenses/Chart';
+import { Expense } from '~/models';
+
+const DUMMY_EXPENSES: Expense[] = [
   {
     id: 'e1',
     title: 'First Expense',
@@ -14,9 +20,6 @@ const DUMMY_EXPENSES = [
     date: new Date().toISOString(),
   },
 ];
-
-import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
-import Chart from '~/components/expenses/Chart';
 
 export default function ExpensesAnalysisPage() {
   return (

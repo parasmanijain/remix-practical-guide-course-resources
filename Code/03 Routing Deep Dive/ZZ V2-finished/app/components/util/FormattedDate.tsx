@@ -1,4 +1,4 @@
-function FormattedDate({date}) {
+function FormattedDate({ date }: { date: string | Date }) {
   const formattedDate = new Date(date).toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short',

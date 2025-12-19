@@ -1,6 +1,13 @@
 // /expenses => shared layout
 
-const DUMMY_EXPENSES = [
+
+
+import { Link, Outlet } from '@remix-run/react';
+import { FaPlus, FaDownload } from 'react-icons/fa';
+import { Expense } from '~/models';
+import ExpensesList from '~/components/expenses/ExpensesList';
+
+const DUMMY_EXPENSES: Expense[] = [
   {
     id: 'e1',
     title: 'First Expense',
@@ -14,11 +21,6 @@ const DUMMY_EXPENSES = [
     date: new Date().toISOString(),
   },
 ];
-
-import { Link, Outlet } from '@remix-run/react';
-import { FaPlus, FaDownload } from 'react-icons/fa';
-
-import ExpensesList from '~/components/expenses/ExpensesList';
 
 export default function ExpensesLayout() {
   return (
