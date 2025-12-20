@@ -27,36 +27,23 @@ function ExpenseForm() {
 
   const defaultValues = expenseData
     ? {
-        title: expenseData.title,
-        amount: expenseData.amount,
-        date: expenseData.date.toISOString(),
-      }
+      title: expenseData.title,
+      amount: expenseData.amount,
+      date: expenseData.date.toISOString(),
+    }
     : {
-        title: '',
-        amount: '',
-        date: '',
-      };
+      title: '',
+      amount: '',
+      date: '',
+    };
 
   const isSubmitting = navigation.state !== 'idle';
-
-  // const submit = useSubmit();
-
-  // function submitHandler(event) {
-  //   event.preventDefault();
-  //   // perform your own validation
-  //   // ...
-  //   submit(event.target, {
-  //     // action: '/expenses/add',
-  //     method: 'post',
-  //   });
-  // }
 
   return (
     <Form
       method={expenseData ? 'patch' : 'post'}
       className='form'
       id='expense-form'
-      // onSubmit={submitHandler}
     >
       <p>
         <label htmlFor='title'>Expense Title</label>

@@ -1,6 +1,9 @@
 import { Link, useFetcher } from '@remix-run/react';
+import { Expense } from 'models';
 
-function ExpenseListItem({ id, title, amount }) {
+type ExpenseListItemProps = Pick<Expense, 'id' | 'title' | 'amount'>;
+
+function ExpenseListItem({ id, title, amount }: ExpenseListItemProps) {
   // const submit = useSubmit();
   const fetcher = useFetcher();
   function deleteExpenseItemHandler() {

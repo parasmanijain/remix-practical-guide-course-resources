@@ -1,6 +1,11 @@
+import { Expense } from 'models';
 import ChartBar from './ChartBar';
 
-function Chart({ expenses }) {
+interface ChartProps {
+  expenses: Expense[];
+}
+
+function Chart({ expenses }: ChartProps) {
   const chartDataPoints = [
     { label: 'Jan', value: 0 },
     { label: 'Feb', value: 0 },

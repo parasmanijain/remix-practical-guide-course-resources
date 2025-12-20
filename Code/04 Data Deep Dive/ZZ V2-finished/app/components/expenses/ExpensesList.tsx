@@ -1,9 +1,13 @@
+import { Expense } from 'models';
 import ExpenseListItem from './ExpenseListItem';
 
-function ExpensesList({ expenses }) {
+type ExpensesListProps = {
+  expenses: Expense[];
+};
 
+function ExpensesList({ expenses }: ExpensesListProps) {
   return (
-    <ol id="expenses-list">
+    <ol id='expenses-list'>
       {expenses.map((expense) => (
         <li key={expense.id}>
           <ExpenseListItem

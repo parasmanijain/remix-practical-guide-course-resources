@@ -1,4 +1,13 @@
-function PricingPlan({ title, price, perks, icon }) {
+import type { IconType } from 'react-icons';
+
+type PricingPlanProps = {
+  title: string;
+  price: string;
+  perks: string[];
+  icon: IconType;
+};
+
+function PricingPlan({ title, price, perks, icon }: PricingPlanProps) {
   const Icon = icon;
   return (
     <article>
