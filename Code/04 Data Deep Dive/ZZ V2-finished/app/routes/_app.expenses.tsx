@@ -1,7 +1,6 @@
 // /expenses => shared layout
 import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import { FaPlus, FaDownload } from 'react-icons/fa';
-
 import ExpensesList from '~/components/expenses/ExpensesList';
 import { getExpenses } from '~/data/expenses.server';
 

@@ -6,7 +6,6 @@ import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
 import { deleteExpense, updateExpense } from '~/data/expenses.server';
 import { validateExpenseInput } from '~/data/validation.server';
-// import { getExpense } from '~/data/expenses.server';
 
 export default function UpdateExpensesPage() {
   const navigate = useNavigate();
@@ -22,13 +21,6 @@ export default function UpdateExpensesPage() {
     </Modal>
   );
 }
-
-// export async function loader({params}) {
-//   console.log('EXPENSE ID LOADER');
-//   const expenseId = params.id;
-//   const expense = await getExpense(expenseId)
-//   return expense;
-// }
 
 export async function action({ params, request }) {
   const expenseId = params.id;
