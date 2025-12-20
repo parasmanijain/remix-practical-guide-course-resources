@@ -5,7 +5,6 @@ import {
   isRouteErrorResponse,
   useLoaderData,
 } from '@remix-run/react';
-
 import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
 import Chart from '~/components/expenses/Chart';
 import { getExpenses } from '~/data/expenses.server';
