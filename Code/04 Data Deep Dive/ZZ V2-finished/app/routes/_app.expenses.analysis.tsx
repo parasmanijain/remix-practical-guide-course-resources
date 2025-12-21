@@ -8,10 +8,10 @@ import {
 import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
 import Chart from '~/components/expenses/Chart';
 import { getExpenses } from '~/data/expenses.server';
-import Error from '~/components/util/Error';
+import ErrorComponent from '~/components/util/Error';
 
 export default function ExpensesAnalysisPage() {
-  const expenses = useLoaderData();
+  const expenses = useLoaderData<typeof loader>();
 
   return (
     <main>
@@ -41,7 +41,7 @@ export function ErrorBoundary() {
   const error = useRouteError();
   const response = isRouteErrorResponse(error);
 
-  let title = 'Error!';
+  let title = 'ErrorComponent!';
   let message = 'Something went wrong - could not load expenses.';
   if (response) {
     title ??= error.statusText;
@@ -50,9 +50,9 @@ export function ErrorBoundary() {
 
   return (
     <main>
-      <Error title={title}>
+      <ErrorComponent title={title}>
         <p>{message}</p>
-      </Error>
+      </ErrorComponent>
     </main>
   );
 }

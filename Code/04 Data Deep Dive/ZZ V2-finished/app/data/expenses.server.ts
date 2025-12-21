@@ -1,60 +1,86 @@
+import type { Expense } from '@prisma/client';
 import { prisma } from './database.server';
 
-export async function addExpense(expenseData) {
+// app/types/expense.ts
+export interface ExpenseInput {
+  title: string;
+  amount: number | string;
+  date: string | Date;
+}
+
+/**
+ * Create Expense
+ */
+export async function addExpense(expenseData: ExpenseInput): Promise<Expense> {
   try {
     return await prisma.expense.create({
       data: {
         title: expenseData.title,
-        amount: +expenseData.amount,
+        amount: Number(expenseData.amount),
         date: new Date(expenseData.date),
       },
     });
-  } catch (error) {
+  } catch {
     throw new Error('Failed to add expense.');
   }
 }
 
-export async function getExpenses() {
+/**
+ * Get all expenses
+ */
+export async function getExpenses(): Promise<Expense[]> {
   try {
-    const expenses = await prisma.expense.findMany({
+    return await prisma.expense.findMany({
       orderBy: { date: 'desc' },
     });
-    return expenses;
-  } catch (error) {
+  } catch {
     throw new Error('Failed to get expenses.');
   }
 }
 
-export async function getExpense(id) {
+/**
+ * Get single expense
+ */
+export async function getExpense(id: string): Promise<Expense | null> {
   try {
-    const expense = await prisma.expense.findFirst({ where: { id } });
-    return expense;
-  } catch (error) {
+    return await prisma.expense.findFirst({
+      where: { id },
+    });
+  } catch {
     throw new Error('Failed to get expense.');
   }
 }
 
-export async function updateExpense(id, expenseData) {
+/**
+ * Update expense
+ */
+export async function updateExpense(
+  id: string,
+  expenseData: ExpenseInput
+): Promise<Expense> {
   try {
-    await prisma.expense.update({
+    return await prisma.expense.update({
       where: { id },
       data: {
         title: expenseData.title,
-        amount: +expenseData.amount,
+        amount: Number(expenseData.amount),
         date: new Date(expenseData.date),
       },
     });
-  } catch (error) {
+  } catch {
     throw new Error('Failed to update expense.');
   }
 }
 
-export async function deleteExpense(id) {
+/**
+ * Delete expense
+ */
+export async function deleteExpense(id: string): Promise<Expense> {
   try {
-    await prisma.expense.delete({
+    return await prisma.expense.delete({
       where: { id },
     });
-  } catch (error) {
+  } catch {
     throw new Error('Failed to delete expense.');
   }
 }

@@ -1,6 +1,6 @@
 // /expenses/<some-id> => /expenses/expense-1, /expenses/e-1
 
-import { redirect } from '@remix-run/node';
+import { type ActionFunctionArgs, redirect } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
 import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
@@ -11,7 +11,6 @@ export default function UpdateExpensesPage() {
   const navigate = useNavigate();
 
   function closeHandler() {
-    // navigate programmatically
     navigate('..');
   }
 
@@ -22,8 +21,15 @@ export default function UpdateExpensesPage() {
   );
 }
 
-export async function action({ params, request }) {
+/**
+ * Action
+ */
+export async function action({ params, request }: ActionFunctionArgs) {
   const expenseId = params.id;
+
+  if (!expenseId) {
+    throw new Response('Expense ID is required', { status: 400 });
+  }
 
   if (request.method === 'PATCH') {
     const formData = await request.formData();
@@ -32,13 +38,18 @@ export async function action({ params, request }) {
     try {
       validateExpenseInput(expenseData);
     } catch (error) {
+      // validation errors object (422)
       return error;
     }
 
     await updateExpense(expenseId, expenseData);
     return redirect('/expenses');
-  } else if (request.method === 'DELETE') {
+  }
+
+  if (request.method === 'DELETE') {
     await deleteExpense(expenseId);
     return { deletedId: expenseId };
   }
+
+  throw new Response('Method not allowed', { status: 405 });
 }

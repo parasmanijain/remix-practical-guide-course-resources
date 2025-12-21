@@ -1,19 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
-/**
- * @type PrismaClient
- */
-let prisma;
+declare global {
+  // eslint-disable-next-line no-var
+  var __prisma: PrismaClient | undefined;
+}
+
+let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
-  prisma.$connect();
+  await prisma.$connect();
 } else {
-  if (!global.__db) {
-    global.__db = new PrismaClient();
-    global.__db.$connect();
+  if (!globalThis.__prisma) {
+    globalThis.__prisma = new PrismaClient();
+    await globalThis.__prisma.$connect();
   }
-  prisma = global.__db;
+  prisma = globalThis.__prisma;
 }
 
 export { prisma };

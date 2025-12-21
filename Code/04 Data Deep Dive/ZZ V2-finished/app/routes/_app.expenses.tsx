@@ -5,7 +5,7 @@ import ExpensesList from '~/components/expenses/ExpensesList';
 import { getExpenses } from '~/data/expenses.server';
 
 export default function ExpensesLayout() {
-  const expenses = useLoaderData();
+  const expenses = useLoaderData<typeof loader>();
 
   const hasExpenses = expenses && expenses.length > 0;
 

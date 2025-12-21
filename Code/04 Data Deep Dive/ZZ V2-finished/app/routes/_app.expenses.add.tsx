@@ -1,6 +1,6 @@
 // /expenses/add
 
-import { redirect } from '@remix-run/node';
+import { type ActionFunctionArgs, redirect } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
 import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
@@ -22,7 +22,7 @@ export default function AddExpensesPage() {
   );
 }
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const expenseData = Object.fromEntries(formData);
 
