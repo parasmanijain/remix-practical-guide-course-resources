@@ -34,7 +34,7 @@ export async function loader() {
     );
   }
 
-  return expenses; // return json(expenses);
+  return expenses;
 }
 
 export function ErrorBoundary() {

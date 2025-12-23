@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react';
-import { Note, NotesFile } from '~/models';
+import { NotesFile } from '~/models';
 import styles from './NoteList.css?url';
 
 function NoteList({ notes }: NotesFile) {

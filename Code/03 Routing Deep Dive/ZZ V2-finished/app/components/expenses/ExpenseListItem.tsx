@@ -4,9 +4,7 @@ import { Expense } from '~/models';
 type ExpenseListItemProps = Pick<Expense, 'id' | 'title' | 'amount'>;
 
 function ExpenseListItem({ id, title, amount }: ExpenseListItemProps) {
-  function deleteExpenseItemHandler() {
-    // tbd
-  }
+  function deleteExpenseItemHandler() { }
 
   return (
     <article className='expense-item'>

@@ -1,5 +1,4 @@
 import { Link, NavLink } from '@remix-run/react';
-
 import Logo from '../util/Logo';
 
 function MainHeader() {

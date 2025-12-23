@@ -1,7 +1,5 @@
 // /expenses/analysis
 
-
-
 import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
 import Chart from '~/components/expenses/Chart';
 import { Expense } from '~/models';

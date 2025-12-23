@@ -9,7 +9,6 @@ import {
   isRouteErrorResponse,
   ErrorResponse,
 } from '@remix-run/react';
-
 import MainNavigation from '~/components/MainNavigation';
 import styles from '~/styles/main.css?url';
 
