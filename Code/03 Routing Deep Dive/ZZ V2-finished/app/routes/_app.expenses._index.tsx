@@ -1,7 +1,5 @@
 // /expenses => shared layout
 
-
-
 import { Link, Outlet } from '@remix-run/react';
 import { FaPlus, FaDownload } from 'react-icons/fa';
 import { Expense } from '~/models';
