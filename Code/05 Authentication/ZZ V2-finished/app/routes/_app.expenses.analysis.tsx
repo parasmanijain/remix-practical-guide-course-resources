@@ -1,19 +1,22 @@
 // /expenses/analysis
+
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import {
   useRouteError,
   isRouteErrorResponse,
   useLoaderData,
 } from '@remix-run/react';
-
 import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
 import Chart from '~/components/expenses/Chart';
 import { getExpenses } from '~/data/expenses.server';
-import Error from '~/components/util/Error';
+import ErrorComponent from '~/components/util/Error';
 import { requireUserSession } from '~/data/auth.server';
 
+/* ---------------- Page ---------------- */
+
 export default function ExpensesAnalysisPage() {
-  const expenses = useLoaderData();
+  const expenses = useLoaderData<typeof loader>();
 
   return (
     <main>
@@ -23,7 +26,9 @@ export default function ExpensesAnalysisPage() {
   );
 }
 
-export async function loader({ request }) {
+/* ---------------- Loader ---------------- */
+
+export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserSession(request);
 
   const expenses = await getExpenses(userId);
@@ -38,25 +43,28 @@ export async function loader({ request }) {
     );
   }
 
-  return expenses; // return json(expenses);
+  return expenses;
 }
+
+/* ---------------- Error Boundary ---------------- */
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  const response = isRouteErrorResponse(error);
 
   let title = 'Error!';
-  let message = 'Something went wrong - could not load expenses.';
-  if (response) {
-    title ??= error.statusText;
-    message ??= error.data?.message;
+  let message = 'Something went wrong – could not load expenses.';
+
+  if (isRouteErrorResponse(error)) {
+    title = error.statusText || title;
+    message =
+      (error.data as { message?: string })?.message ?? message;
   }
 
   return (
     <main>
-      <Error title={title}>
+      <ErrorComponent title={title}>
         <p>{message}</p>
-      </Error>
+      </ErrorComponent>
     </main>
   );
 }

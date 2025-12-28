@@ -1,10 +1,13 @@
+import type { LoaderFunctionArgs, LinksFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
-
+import { ReactNode } from 'react';
 import MainHeader from '~/components/navigation/MainHeader';
 import { getUserFromSession } from '~/data/auth.server';
 import marketingStyles from '~/styles/marketing.css?url';
 
-export default function MarketingLayout() {
+/* ---------------- Layout ---------------- */
+
+export default function MarketingLayout(): ReactNode {
   return (
     <>
       <MainHeader />
@@ -13,10 +16,14 @@ export default function MarketingLayout() {
   );
 }
 
-export function loader({ request }) {
+/* ---------------- Loader ---------------- */
+
+export async function loader({ request }: LoaderFunctionArgs) {
   return getUserFromSession(request);
 }
 
-export function links() {
-  return [{ rel: 'stylesheet', href: marketingStyles }];
-}
+/* ---------------- Links ---------------- */
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: marketingStyles },
+];

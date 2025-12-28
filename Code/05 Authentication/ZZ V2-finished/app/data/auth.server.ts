@@ -1,21 +1,45 @@
-import { default as bcrypt } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
-
 import { prisma } from './database.server';
+
 const { hash, compare } = bcrypt;
+
+/* ---------------- Env ---------------- */
+
 const SESSION_SECRET = process.env.SESSION_SECRET;
+
+if (!SESSION_SECRET) {
+  throw new Error('SESSION_SECRET must be set');
+}
+
+/* ---------------- Session ---------------- */
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
+    name: '__session',
     secure: process.env.NODE_ENV === 'production',
     secrets: [SESSION_SECRET],
     sameSite: 'lax',
     maxAge: 30 * 24 * 60 * 60, // 30 days
     httpOnly: true,
+    path: '/',
   },
 });
 
-async function createUserSession(userId, redirectPath) {
+/* ---------------- Types ---------------- */
+
+interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+interface AuthError extends Error {
+  status?: number;
+}
+
+/* ---------------- Helpers ---------------- */
+
+async function createUserSession(userId: string, redirectPath: string) {
   const session = await sessionStorage.getSession();
   session.set('userId', userId);
   return redirect(redirectPath, {
@@ -25,20 +49,24 @@ async function createUserSession(userId, redirectPath) {
   });
 }
 
-export async function getUserFromSession(request) {
+/* ---------------- Session Access ---------------- */
+
+export async function getUserFromSession(
+  request: Request
+): Promise<string | null> {
   const session = await sessionStorage.getSession(
     request.headers.get('Cookie')
   );
 
   const userId = session.get('userId');
-  if (!userId) {
+  if (typeof userId !== 'string') {
     return null;
   }
 
   return userId;
 }
 
-export async function destroyUserSession(request) {
+export async function destroyUserSession(request: Request) {
   const session = await sessionStorage.getSession(
     request.headers.get('Cookie')
   );
@@ -50,7 +78,7 @@ export async function destroyUserSession(request) {
   });
 }
 
-export async function requireUserSession(request) {
+export async function requireUserSession(request: Request): Promise<string> {
   const userId = await getUserFromSession(request);
   if (!userId) {
     throw redirect('/auth?mode=login');
@@ -59,11 +87,15 @@ export async function requireUserSession(request) {
   return userId;
 }
 
-export async function signup({ email, password }) {
-  const existingUser = await prisma.user.findFirst({ where: { email } });
+/* ---------------- Auth ---------------- */
+
+export async function signup({ email, password }: AuthCredentials) {
+  const existingUser = await prisma.user.findFirst({
+    where: { email },
+  });
 
   if (existingUser) {
-    const error = new Error(
+    const error: AuthError = new Error(
       'A user with the provided email address exists already.'
     );
     error.status = 422;
@@ -73,16 +105,21 @@ export async function signup({ email, password }) {
   const passwordHash = await hash(password, 12);
 
   const user = await prisma.user.create({
-    data: { email: email, password: passwordHash },
+    data: {
+      email,
+      password: passwordHash,
+    },
   });
   return createUserSession(user.id, '/expenses');
 }
 
-export async function login({ email, password }) {
-  const existingUser = await prisma.user.findFirst({ where: { email } });
+export async function login({ email, password }: AuthCredentials) {
+  const existingUser = await prisma.user.findFirst({
+    where: { email },
+  });
 
   if (!existingUser) {
-    const error = new Error(
+    const error: AuthError = new Error(
       'Could not log you in, please check the provided credentials.'
     );
     error.status = 401;
@@ -92,7 +129,7 @@ export async function login({ email, password }) {
   const passwordCorrect = await compare(password, existingUser.password);
 
   if (!passwordCorrect) {
-    const error = new Error(
+    const error: AuthError = new Error(
       'Could not log you in, please check the provided credentials.'
     );
     error.status = 401;

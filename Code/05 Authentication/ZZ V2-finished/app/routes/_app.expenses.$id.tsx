@@ -1,8 +1,8 @@
 // /expenses/<some-id> => /expenses/expense-1, /expenses/e-1
 
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
-
 import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
 import { deleteExpense, updateExpense } from '~/data/expenses.server';
@@ -24,19 +24,22 @@ export default function UpdateExpensesPage() {
   );
 }
 
-// export async function loader({params}) {
-//   console.log('EXPENSE ID LOADER');
-//   const expenseId = params.id;
-//   const expense = await getExpense(expenseId)
-//   return expense;
-// }
+/* ---------------- Action ---------------- */
 
-export async function action({ params, request }) {
+export async function action({ params, request }: ActionFunctionArgs) {
   const expenseId = params.id;
+
+  if (!expenseId) {
+    throw new Response('Expense ID is required', { status: 400 });
+  }
 
   if (request.method === 'PATCH') {
     const formData = await request.formData();
-    const expenseData = Object.fromEntries(formData);
+
+    const expenseData = Object.fromEntries(formData) as Record<
+      string,
+      FormDataEntryValue
+    >;
 
     try {
       validateExpenseInput(expenseData);
@@ -46,8 +49,12 @@ export async function action({ params, request }) {
 
     await updateExpense(expenseId, expenseData);
     return redirect('/expenses');
-  } else if (request.method === 'DELETE') {
+  }
+
+  if (request.method === 'DELETE') {
     await deleteExpense(expenseId);
     return { deletedId: expenseId };
   }
+
+  throw new Response('Method not allowed', { status: 405 });
 }

@@ -1,8 +1,8 @@
 // /expenses/add
 
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useNavigate } from '@remix-run/react';
-
 import ExpenseForm from '~/components/expenses/ExpenseForm';
 import Modal from '~/components/util/Modal';
 import { requireUserSession } from '~/data/auth.server';
@@ -24,16 +24,17 @@ export default function AddExpensesPage() {
   );
 }
 
-// export function loader() {
-//   console.log('ADD LOADER');
-//   return null;
-// }
+/* ---------------- Action ---------------- */
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const userId = await requireUserSession(request);
 
   const formData = await request.formData();
-  const expenseData = Object.fromEntries(formData);
+
+  const expenseData = Object.fromEntries(formData) as Record<
+    string,
+    FormDataEntryValue
+  >;
 
   try {
     validateExpenseInput(expenseData);
