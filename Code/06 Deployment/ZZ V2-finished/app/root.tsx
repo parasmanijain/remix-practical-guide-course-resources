@@ -1,3 +1,6 @@
+import type { ReactNode } from 'react';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type { ErrorResponse } from '@remix-run/router';
 import {
   Link,
   Links,
@@ -11,9 +14,11 @@ import {
 } from '@remix-run/react';
 
 import sharedStyles from '~/styles/shared.css?url';
-import Error from './components/util/Error';
+import ErrorComponent from './components/util/Error';
 
-export const meta = () => [
+/* ---------------- Meta ---------------- */
+
+export const meta: MetaFunction = () => [
   {
     charset: 'utf-8',
     title: 'RemixExpenses',
@@ -21,10 +26,19 @@ export const meta = () => [
   },
 ];
 
-function Document({ title, children }) {
+/* ---------------- Document ---------------- */
+
+interface DocumentProps {
+  title?: string;
+  children: ReactNode;
+}
+
+function Document({ title, children }: DocumentProps) {
   const matches = useMatches();
 
-  const disableJS = matches.some((match) => match.handle?.disableJS);
+  const disableJS: boolean = matches.some(
+    (match) => (match.handle as { disableJS?: boolean })?.disableJS
+  );
 
   return (
     <html lang='en'>
@@ -42,6 +56,8 @@ function Document({ title, children }) {
   );
 }
 
+/* ---------------- App ---------------- */
+
 export default function App() {
   return (
     <Document>
@@ -50,19 +66,25 @@ export default function App() {
   );
 }
 
-export function CatchBoundary({ error }) {
+/* ---------------- Route Error Boundary ---------------- */
+
+interface CatchBoundaryProps {
+  error: ErrorResponse;
+}
+
+function CatchBoundary({ error }: CatchBoundaryProps) {
   return (
     <Document title={error.statusText}>
       <main>
-        <Error title={error.statusText}>
+        <ErrorComponent title={error.statusText}>
           <p>
-            {error.data?.message ||
+            {error.data?.message ??
               'Something went wrong. Please try again later.'}
           </p>
           <p>
             Back to <Link to='/'>safety</Link>.
           </p>
-        </Error>
+        </ErrorComponent>
       </main>
     </Document>
   );
@@ -70,28 +92,33 @@ export function CatchBoundary({ error }) {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  const response = isRouteErrorResponse(error);
+  console.error(error);
 
-  if (response) {
+  if (isRouteErrorResponse(error)) {
     return <CatchBoundary error={error} />;
   }
+
+  const message: string =
+    error instanceof Error
+      ? error.message
+      : 'Something went wrong. Please try again later.';
 
   return (
     <Document title='An error occurred'>
       <main>
-        <Error title='An error occurred'>
-          <p>
-            {error.message || 'Something went wrong. Please try again later.'}
-          </p>
+        <ErrorComponent title='An error occurred'>
+          <p>{message}</p>
           <p>
             Back to <Link to='/'>safety</Link>.
           </p>
-        </Error>
+        </ErrorComponent>
       </main>
     </Document>
   );
 }
 
-export function links() {
-  return [{ rel: 'stylesheet', href: sharedStyles }];
-}
+/* ---------------- Links ---------------- */
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: sharedStyles },
+];

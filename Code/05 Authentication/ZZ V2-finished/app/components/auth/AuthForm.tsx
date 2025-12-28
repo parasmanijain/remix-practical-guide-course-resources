@@ -7,10 +7,12 @@ import {
 } from '@remix-run/react';
 import { FaLock, FaUserPlus } from 'react-icons/fa';
 
+type ValidationErrors = Record<string, string> | undefined;
+
 function AuthForm() {
   const [searchParams] = useSearchParams();
   const navigation = useNavigation();
-  const validationErrors = useActionData();
+  const validationErrors = useActionData<ValidationErrors>();
 
   const authMode = searchParams.get('mode') || 'login';
 
