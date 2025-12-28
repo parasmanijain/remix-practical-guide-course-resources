@@ -55,7 +55,7 @@ export function meta() {
   ];
 }
 
-export function headers({ actionHeaders, loaderHeaders, parentHeaders }) {
+export function headers({ parentHeaders }) {
   return {
     'Cache-Control': parentHeaders.get('Cache-Control'), // 60 minutes
   };

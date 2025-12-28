@@ -1,5 +1,6 @@
 // import { redirect } from '@remix-run/node';
 
+import { ActionFunctionArgs } from '@remix-run/node';
 import AuthForm from '~/components/auth/AuthForm';
 import { login, signup } from '~/data/auth.server';
 import { validateCredentials } from '~/data/validation.server';
@@ -9,7 +10,7 @@ export default function AuthPage() {
   return <AuthForm />;
 }
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const searchParams = new URL(request.url).searchParams;
   const authMode = searchParams.get('mode') || 'login';
 
@@ -40,7 +41,7 @@ export function links() {
   return [{ rel: 'stylesheet', href: authStyles }];
 }
 
-export function headers({ actionHeaders, loaderHeaders, parentHeaders }) {
+export function headers({ parentHeaders }) {
   return {
     'Cache-Control': parentHeaders.get('Cache-Control'), // 60 minutes
   };

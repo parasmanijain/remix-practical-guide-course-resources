@@ -31,10 +31,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const formData = await request.formData();
 
-  const expenseData = Object.fromEntries(formData) as Record<
-    string,
-    FormDataEntryValue
-  >;
+  // ✅ Explicitly extract & convert form values
+  const expenseData = {
+    title: formData.get('title') as string,
+    amount: Number(formData.get('amount')),
+    date: new Date(formData.get('date') as string),
+  };
 
   try {
     validateExpenseInput(expenseData);

@@ -41,7 +41,7 @@ export function ErrorBoundary() {
   const error = useRouteError();
   const response = isRouteErrorResponse(error);
 
-  let title = 'ErrorComponent!';
+  let title = 'Error!';
   let message = 'Something went wrong - could not load expenses.';
   if (response) {
     title ??= error.statusText;

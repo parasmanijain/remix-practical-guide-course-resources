@@ -5,15 +5,14 @@ import {
   isRouteErrorResponse,
   useLoaderData,
 } from '@remix-run/react';
-
 import ExpenseStatistics from '~/components/expenses/ExpenseStatistics';
 import Chart from '~/components/expenses/Chart';
 import { getExpenses } from '~/data/expenses.server';
-import Error from '~/components/util/Error';
+import ErrorComponent from '~/components/util/Error';
 import { requireUserSession } from '~/data/auth.server';
 
 export default function ExpensesAnalysisPage() {
-  const expenses = useLoaderData();
+  const expenses = useLoaderData<typeof loader>();
 
   return (
     <main>
@@ -38,7 +37,7 @@ export async function loader({ request }) {
     );
   }
 
-  return expenses; // return json(expenses);
+  return expenses;
 }
 
 export function ErrorBoundary() {
@@ -55,9 +54,9 @@ export function ErrorBoundary() {
 
   return (
     <main>
-      <Error title={title}>
+      <ErrorComponent title={title}>
         <p>{message}</p>
-      </Error>
+      </ErrorComponent>
     </main>
   );
 }

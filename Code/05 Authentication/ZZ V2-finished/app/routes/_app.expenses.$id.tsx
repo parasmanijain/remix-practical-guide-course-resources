@@ -35,11 +35,11 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   if (request.method === 'PATCH') {
     const formData = await request.formData();
-
-    const expenseData = Object.fromEntries(formData) as Record<
-      string,
-      FormDataEntryValue
-    >;
+    const expenseData = {
+      title: formData.get('title') as string,
+      amount: Number(formData.get('amount')),
+      date: new Date(formData.get('date') as string),
+    };
 
     try {
       validateExpenseInput(expenseData);

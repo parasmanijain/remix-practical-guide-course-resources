@@ -1,3 +1,4 @@
+import { LoaderFunctionArgs } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 
 import MainHeader from '~/components/navigation/MainHeader';
@@ -13,7 +14,7 @@ export default function MarketingLayout() {
   );
 }
 
-export function loader({ request }) {
+export function loader({ request }: LoaderFunctionArgs) {
   return getUserFromSession(request);
 }
 
