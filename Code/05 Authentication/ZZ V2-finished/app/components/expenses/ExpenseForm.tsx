@@ -2,62 +2,63 @@ import {
   Form,
   Link,
   useActionData,
-  useLoaderData,
   useMatches,
   useParams,
   useNavigation,
 } from '@remix-run/react';
 
+/**
+ * Domain types
+ */
+type Expense = {
+  id: string;
+  title: string;
+  amount: number;
+  date: Date;
+};
+
+type ValidationErrors = Record<string, string> | undefined;
+
 function ExpenseForm() {
-  const today = new Date().toISOString().slice(0, 10); // yields something like 2023-09-10
-  const validationErrors = useActionData();
-  // const expenseData = useLoaderData();
-  const params = useParams();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const validationErrors = useActionData<ValidationErrors>();
+  const params = useParams<{ id?: string }>();
+  const navigation = useNavigation();
   const matches = useMatches();
-  const expenses = matches.find(
-    (match) => match.id === 'routes/_app.expenses'
-  )?.data;
+
+  /**
+   * Get expenses from parent route: routes/_app.expenses
+   * Remix doesn't strongly type match.data, so we cast safely.
+   */
+  const expenses = matches.find((match) => match.id === 'routes/_app.expenses')
+    ?.data as Expense[] | undefined;
+
   const expenseData = expenses?.find((expense) => expense.id === params.id);
 
-  const navigation = useNavigation();
-
   if (params.id && !expenseData) {
-    // throw new Response();
     return <p>Invalid expense id.</p>;
   }
 
   const defaultValues = expenseData
     ? {
-        title: expenseData.title,
-        amount: expenseData.amount,
-        date: expenseData.date.toISOString(),
-      }
+      title: expenseData.title,
+      amount: expenseData.amount,
+      date: expenseData.date.toISOString(),
+    }
     : {
-        title: '',
-        amount: '',
-        date: '',
-      };
+      title: '',
+      amount: '',
+      date: '',
+    };
 
   const isSubmitting = navigation.state !== 'idle';
-
-  // const submit = useSubmit();
-
-  // function submitHandler(event) {
-  //   event.preventDefault();
-  //   // perform your own validation
-  //   // ...
-  //   submit(event.target, {
-  //     // action: '/expenses/add',
-  //     method: 'post',
-  //   });
-  // }
 
   return (
     <Form
       method={expenseData ? 'patch' : 'post'}
       className='form'
       id='expense-form'
-      // onSubmit={submitHandler}
     >
       <p>
         <label htmlFor='title'>Expense Title</label>
@@ -84,6 +85,7 @@ function ExpenseForm() {
             defaultValue={defaultValues.amount}
           />
         </p>
+
         <p>
           <label htmlFor='date'>Date</label>
           <input
@@ -98,6 +100,7 @@ function ExpenseForm() {
           />
         </p>
       </div>
+
       {validationErrors && (
         <ul>
           {Object.values(validationErrors).map((error) => (
@@ -105,6 +108,7 @@ function ExpenseForm() {
           ))}
         </ul>
       )}
+
       <div className='form-actions'>
         <button
           disabled={isSubmitting}

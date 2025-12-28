@@ -1,33 +1,38 @@
+import { ReactNode } from 'react';
 import { Form, Link, NavLink, useLoaderData } from '@remix-run/react';
-
 import Logo from '../util/Logo';
 
-function MainHeader() {
-  const userId = useLoaderData();
+/* ---------------- Types ---------------- */
+
+type LoaderData = string | null; // userId from loader (string if logged in, null if not)
+
+/* ---------------- Component ---------------- */
+
+function MainHeader(): ReactNode {
+  const userId = useLoaderData<LoaderData>();
 
   return (
-    <header id="main-header">
+    <header id='main-header'>
       <Logo />
-      <nav id="main-nav">
+      <nav id='main-nav'>
         <ul>
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to='/'>Home</NavLink>
           </li>
           <li>
-            <NavLink to="/pricing">Pricing</NavLink>
+            <NavLink to='/pricing'>Pricing</NavLink>
           </li>
         </ul>
       </nav>
-      <nav id="cta-nav">
+      <nav id='cta-nav'>
         <ul>
           <li>
-            {userId && (
-              <Form method="post" action="/logout" id="logout-form">
-                <button className="cta-alt">Logout</button>
+            {userId ? (
+              <Form method='post' action='/logout' id='logout-form'>
+                <button className='cta-alt'>Logout</button>
               </Form>
-            )}
-            {!userId && (
-              <Link to="/auth" className="cta">
+            ) : (
+              <Link to='/auth' className='cta'>
                 Login
               </Link>
             )}

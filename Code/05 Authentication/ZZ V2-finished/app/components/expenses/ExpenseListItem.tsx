@@ -1,6 +1,9 @@
-import { Form, Link, useFetcher, useSubmit } from '@remix-run/react';
+import { Link, useFetcher } from '@remix-run/react';
+import { Expense } from 'models';
 
-function ExpenseListItem({ id, title, amount }) {
+type ExpenseListItemProps = Pick<Expense, 'id' | 'title' | 'amount'>;
+
+function ExpenseListItem({ id, title, amount }: ExpenseListItemProps) {
   // const submit = useSubmit();
   const fetcher = useFetcher();
   function deleteExpenseItemHandler() {
@@ -17,19 +20,19 @@ function ExpenseListItem({ id, title, amount }) {
 
   if (fetcher.state !== 'idle') {
     return (
-      <article className="expense-item locked">
+      <article className='expense-item locked'>
         <p>Deleting...</p>
       </article>
     );
   }
 
   return (
-    <article className="expense-item">
+    <article className='expense-item'>
       <div>
-        <h2 className="expense-title">{title}</h2>
-        <p className="expense-amount">${amount.toFixed(2)}</p>
+        <h2 className='expense-title'>{title}</h2>
+        <p className='expense-amount'>${amount.toFixed(2)}</p>
       </div>
-      <menu className="expense-actions">
+      <menu className='expense-actions'>
         <button onClick={deleteExpenseItemHandler}>Delete</button>
         {/* <Form method='delete' action={`/expenses/${id}`}>
           <button formMethod='delete'>Delete</button>
