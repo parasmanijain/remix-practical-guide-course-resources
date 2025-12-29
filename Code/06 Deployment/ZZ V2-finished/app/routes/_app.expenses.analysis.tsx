@@ -1,5 +1,5 @@
 // /expenses/analysis
-import { json } from '@remix-run/node';
+import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import {
   useRouteError,
   isRouteErrorResponse,
@@ -22,7 +22,7 @@ export default function ExpensesAnalysisPage() {
   );
 }
 
-export async function loader({ request }) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserSession(request);
 
   const expenses = await getExpenses(userId);

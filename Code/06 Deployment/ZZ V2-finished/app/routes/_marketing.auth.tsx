@@ -1,22 +1,56 @@
-// import { redirect } from '@remix-run/node';
-
-import { ActionFunctionArgs } from '@remix-run/node';
+import type {
+  ActionFunctionArgs,
+  LinksFunction,
+  HeadersFunction,
+} from '@remix-run/node';
+import type { ReactNode } from 'react';
 import AuthForm from '~/components/auth/AuthForm';
 import { login, signup } from '~/data/auth.server';
 import { validateCredentials } from '~/data/validation.server';
 import authStyles from '~/styles/auth.css?url';
 
-export default function AuthPage() {
+type AuthMode = 'login' | 'signup';
+
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+/**
+ * Type guard for HTTP-style errors thrown from auth logic
+ */
+function isHttpError(
+  error: unknown
+): error is { status: number; message: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    'message' in error &&
+    typeof (error as { status: unknown }).status === 'number' &&
+    typeof (error as { message: unknown }).message === 'string'
+  );
+}
+
+export default function AuthPage(): ReactNode {
   return <AuthForm />;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const searchParams = new URL(request.url).searchParams;
-  const authMode = searchParams.get('mode') || 'login';
+
+  const authMode: AuthMode =
+    searchParams.get('mode') === 'signup' ? 'signup' : 'login';
 
   const formData = await request.formData();
-  const credentials = Object.fromEntries(formData);
+  const email = formData.get('email');
+  const password = formData.get('password');
 
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return { credentials: 'Invalid form submission.' };
+  }
+
+  const credentials: Credentials = { email, password };
   try {
     validateCredentials(credentials);
   } catch (error) {
@@ -24,25 +58,24 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    if (authMode === 'login') {
-      return await login(credentials);
-    } else {
-      return await signup(credentials);
-    }
-  } catch (error) {
-    if (error.status === 422) {
+    return authMode === 'login'
+      ? await login(credentials)
+      : await signup(credentials);
+  } catch (error: unknown) {
+    if (isHttpError(error) && error.status === 422) {
       return { credentials: error.message };
     }
+
     return { credentials: 'Invalid username or password.' };
   }
 }
 
-export function links() {
+export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: authStyles }];
-}
+};
 
-export function headers({ parentHeaders }) {
+export const headers: HeadersFunction = ({ parentHeaders }) => {
   return {
-    'Cache-Control': parentHeaders.get('Cache-Control'), // 60 minutes
+    'Cache-Control': parentHeaders.get('Cache-Control') ?? '',
   };
-}
+};

@@ -1,7 +1,7 @@
 // /expenses => shared layout
 
 import { json } from '@remix-run/node';
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { HeadersFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import { FaPlus, FaDownload } from 'react-icons/fa';
 import ExpensesList from '~/components/expenses/ExpensesList';
@@ -57,10 +57,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
-export function headers({
-  loaderHeaders,
-}) {
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return {
-    'Cache-Control': loaderHeaders.get('Cache-Control') // 60 minutes
-  }
-}
+    'Cache-Control': loaderHeaders.get('Cache-Control') ?? '',
+  };
+};

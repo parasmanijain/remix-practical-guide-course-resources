@@ -1,8 +1,19 @@
+// routes/_marketing.price.tsx
+import type { MetaFunction, HeadersFunction } from '@remix-run/node';
+import { ReactNode } from 'react';
+import type { IconType } from 'react-icons';
 import { FaTrophy, FaHandshake } from 'react-icons/fa';
-
 import PricingPlan from '~/components/marketing/PricingPlan';
 
-const PRICING_PLANS = [
+interface PricingPlanConfig {
+  id: string;
+  title: string;
+  price: string;
+  perks: string[];
+  icon: IconType;
+}
+
+const PRICING_PLANS: PricingPlanConfig[] = [
   {
     id: 'p1',
     title: 'Basic',
@@ -19,13 +30,13 @@ const PRICING_PLANS = [
   },
 ];
 
-export default function PricingPage() {
+export default function PricingPage(): ReactNode {
   return (
-    <main id='pricing'>
+    <main id="pricing">
       <h2>Great Product, Simple Pricing</h2>
-      <ol id='pricing-plans'>
+      <ol id="pricing-plans">
         {PRICING_PLANS.map((plan) => (
-          <li key={plan.id} className='plan'>
+          <li key={plan.id} className="plan">
             <PricingPlan
               title={plan.title}
               price={plan.price}
@@ -39,19 +50,19 @@ export default function PricingPage() {
   );
 }
 
-export function meta() {
+export const meta: MetaFunction = () => {
   return [
-    {
-      title: 'Pricing',
-      description: 'See our pricing plans.',
-    },
+    { title: 'Pricing' },
+    { name: 'description', content: 'See our pricing plans.' },
   ];
-}
+};
 
-export function headers({ parentHeaders }) {
+export const headers: HeadersFunction = ({ parentHeaders }) => {
   return {
-    'Cache-Control': parentHeaders.get('Cache-Control'), // 60 minutes
+    'Cache-Control': parentHeaders.get('Cache-Control') ?? '',
   };
-}
+};
 
-export const handle = { disableJS: true };
+export const handle = {
+  disableJS: true,
+};

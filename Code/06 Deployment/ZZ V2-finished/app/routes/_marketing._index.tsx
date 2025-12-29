@@ -1,3 +1,4 @@
+import { HeadersFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FaArrowRight, FaDollarSign, FaChartBar } from 'react-icons/fa';
 
@@ -55,10 +56,10 @@ export function meta() {
   ];
 }
 
-export function headers({ parentHeaders }) {
+export const headers: HeadersFunction = ({ parentHeaders }) => {
   return {
-    'Cache-Control': parentHeaders.get('Cache-Control'), // 60 minutes
+    'Cache-Control': parentHeaders.get('Cache-Control') ?? '',
   };
-}
+};
 
 export const handle = { disableJS: true };
