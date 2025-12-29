@@ -44,7 +44,7 @@ function ExpenseForm() {
     ? {
       title: expenseData.title,
       amount: expenseData.amount,
-      date: expenseData.date.toISOString(),
+      date: new Date(expenseData.date).toISOString(),
     }
     : {
       title: '',
