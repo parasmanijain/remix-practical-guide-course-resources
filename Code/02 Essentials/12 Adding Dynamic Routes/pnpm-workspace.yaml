@@ -1,4 +1,0 @@
-onlyBuiltDependencies:
-  - deasync
-  - esbuild
-  - unrs-resolver

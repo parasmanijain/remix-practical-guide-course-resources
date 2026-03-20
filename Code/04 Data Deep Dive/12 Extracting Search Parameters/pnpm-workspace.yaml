@@ -1,7 +1,0 @@
-onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
-  - deasync
-  - esbuild
-  - prisma
-  - unrs-resolver
